@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../Header/Header";
+// import Header from "../Header/Header";
 import { routes } from "../utils/routes";
 import "./PageNotFound.css";
 
@@ -13,7 +13,7 @@ const handleBackToTopics = () => {
 
   return (
     <>
-      <Header backButton={false}/>
+      {/* <Header backButton={false}/> */}
       <div className="notFound-container">
         <div className="title-404">404</div>
         <div className="page-not-found">Page not found</div>
