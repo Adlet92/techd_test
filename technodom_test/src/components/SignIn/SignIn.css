@@ -29,7 +29,8 @@
 }
 .error-signin{
 	width: 456px;
-  height: 399px;
+  /* height: 399px; */
+  height: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -40,6 +41,7 @@
 	background: #FFFFFF;
 	padding: 30px;
 	border-radius: 12px;
+  margin-top: 10%;
 }
 
 .container-signin{

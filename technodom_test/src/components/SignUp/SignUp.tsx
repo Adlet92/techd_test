@@ -1,6 +1,7 @@
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { db } from "../../firebase";
+import { PatternFormat } from "react-number-format";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -36,12 +37,13 @@ const SignUp = () => {
       <h1>Register</h1>
 
       <label>Phone number</label>
-      <input
-        placeholder="phone number"
+      <PatternFormat
+        format="+7 (###) #### ###"
+        allowEmptyFormatting mask="_"
+        type="tel"
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
       />
-
       <label>Name</label>
       <input
         placeholder="Name"
