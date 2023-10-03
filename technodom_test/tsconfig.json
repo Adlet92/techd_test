@@ -19,5 +19,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
   },
-  "include": ["src", "src/**/*.tsx", "src/**/*.ts","node_modules/@firebase/app"]
+  "include": ["src", "src/**/*.tsx", "src/**/*.ts","node_modules/@firebase/app", "server.js", "server.js"]
 }

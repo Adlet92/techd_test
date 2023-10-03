@@ -26,12 +26,19 @@ export const validatePassword = (value: string, repeatPassword: string): string[
   return errors;
 };
 
+// export const validateEmail = (email: string): string[] => {
+//   const errors: string[] = [];
+//   if (!email.trim()) {
+//     errors.push("Email is required");
+//   } else if (!/\S+@\S+\.\S+/.test(email)) {
+//     errors.push("Invalid email format");
+//   }
+//   return errors;
+// };
 export const validateEmail = (email: string): string[] => {
   const errors: string[] = [];
   if (!email.trim()) {
     errors.push("Email is required");
-  } else if (!/\S+@\S+\.\S+/.test(email)) {
-    errors.push("Invalid email format");
   }
   return errors;
 };
