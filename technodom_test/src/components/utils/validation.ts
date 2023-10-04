@@ -48,3 +48,5 @@ export const validateForm = (email: string, password: string, repeatPassword: st
   const passwordErrors = validatePassword(password, repeatPassword);
   return [...emailErrors, ...passwordErrors];
 };
+
+

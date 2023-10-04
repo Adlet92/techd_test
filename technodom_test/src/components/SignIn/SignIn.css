@@ -140,6 +140,25 @@ form .btn-signin button{
   color: #175BC0;
 }
 
+form .disabled button{
+	height: 100%;
+	width: 100%;
+	font-size: 18px;
+	font-weight: 500;
+	border: none;
+	cursor: pointer;
+  border-radius: 12px;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+
+  color: #ffffff;
+  background-color: #D3D3D3;
+  border: transparent;
+}
+
 
 form .signin-link{
 	text-align: center;
@@ -149,6 +168,7 @@ form .signin-link{
   font-size: 12px;
   line-height: 16px;
   color: #000000;
+  margin-top: 4%;
 }
 
 form .signin-link a{

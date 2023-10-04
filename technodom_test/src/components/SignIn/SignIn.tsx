@@ -10,30 +10,34 @@ import "./SignIn.css";
 
 
 const SignIn = () => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [expandForm, setExpandForm] = useState(false);
-  const [OTP, setOTP] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [expandForm, setExpandForm] = useState<boolean>(false);
+  const [OTP, setOTP] = useState<string>("");
   const navigate = useNavigate();
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [isCaptchaVisible, setIsCaptchaVisible] = useState<boolean>(false);
+  const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
+  const [otpError, setOtpError] = useState<string>("");
 
   const checkPhoneNumber = useCallback(async () => {
     const strippedPhoneNumber = phoneNumber.replace(/[^\d]/g, '');
     if (strippedPhoneNumber.length === 11) {
       setLoading(true);
-      const phoneNumberExists = await checkPhoneNumberExists(phoneNumber);
+      const phoneNumberExists = await checkPhoneNumberExists(strippedPhoneNumber);
       setLoading(false);
       if (phoneNumberExists) {
         setExpandForm(true);
         setError("");
       } else {
         setError(
-          "Номер телефона не зарегистрирован. Пожалуйста, сначала зарегистрируйтесь."
+          "Номер телефона не зарегистрирован."
         );
       }
     } else {
       setError("");
       setLoading(false);
+      setExpandForm(false);
     }
   }, [phoneNumber]);
 
@@ -44,12 +48,11 @@ const SignIn = () => {
   useEffect(() => {
     const handleRequestOTP = async () => {
       try {
-        setLoading(true);
         await requestOTP(phoneNumber);
-        setLoading(false);
+        setIsCaptchaVisible(true);
       } catch (error) {
-        setLoading(false);
-        // Handle the error as needed.
+        setError("Ошибка при запросе OTP. Возможно телефонный номер не введен полностью");
+        setExpandForm(false);
       }
     };
 
@@ -61,9 +64,25 @@ const SignIn = () => {
   const handleVerifyOTP = (e: React.ChangeEvent<HTMLInputElement>) => {
     let otp = e.target.value;
     setOTP(otp);
-    verifyOTP(otp, navigate);
+    setIsButtonEnabled(otp.length === 6);
+    // verifyOTP(otp, navigate, setIsButtonEnabled);
+  };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isButtonEnabled) {
+      setLoading(true);
+      verifyOTP(OTP, navigate, setOtpError);
+      setLoading(false);
+    }
   };
 
+
+
+  useEffect(() => {
+    if (isCaptchaVisible) {
+      setLoading(false);
+    }
+  }, [isCaptchaVisible]);
 
   return (
     <div className="main">
@@ -71,7 +90,7 @@ const SignIn = () => {
         <div className="container-signin">
           <div className="signin-container">
             <div className="text-signin">Sign in with phone number</div>
-            <form>
+            <form onSubmit={(e) => e.preventDefault()}>
               <div className="data-signin">
                 <label>Phone number</label>
                 <PatternFormat
@@ -91,29 +110,41 @@ const SignIn = () => {
                     value={OTP}
                     onChange={handleVerifyOTP}
                     // className={error ? "error-input-signin" : ""}
-                />
+                  />
+                  {otpError && (
+                  <div className="error-message-signin">{otpError}</div>
+                )}
                 </div>
-                ) : null}
-             {phoneNumber.length === 17 ? (
-                loading ? (
-                  <Loading />
-                ) : (
-                  error && <div className="error-message-signin">{error}</div>
-                )
               ) : null}
-              <div id="sign-in-button"></div>
-              <div className="btn-signin">
-                <button type="submit" disabled={!expandForm}>
-                  {/* {loading ? <Loading /> : "Войти"} */}
-                </button>
-              </div>
-
-              <div className="signin-link">
-                Don’t have an account?{" "}
-                <Link to={routes.signup}>
-                  <label className="slide-signin">Sign up</label>
-                </Link>
-              </div>
+              {loading ? (
+                <div className="loading">
+                 <Loading/>
+                </div>
+              ) : null}
+             {error && (
+                <div className="error-message-signin">{error}</div>
+              )}
+              {!error && (
+                <div id="sign-in-button"></div>
+              )}
+              {!error && expandForm && (
+                <div className={`btn-signin ${(isButtonEnabled && isCaptchaVisible) ? "" : "disabled"}`}>
+                  <button
+                    type="submit"
+                    disabled={(!isButtonEnabled || !isCaptchaVisible)}
+                    onClick={handleSubmit}>
+                    Войти
+                  </button>
+                </div>
+              )}
+              {error && error !== "Ошибка при запросе OTP. Возможно телефонный номер не введен полностью" && (
+                <div className="signin-link">
+                  Нет аккаунта?{" "}
+                  <Link to={routes.signup}>
+                    <label className="slide-signin">Зарегистрируйтесь</label>
+                  </Link>
+                </div>
+              )}
             </form>
           </div>
         </div>

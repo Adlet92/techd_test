@@ -1,14 +1,15 @@
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
-import { db } from "../../firebase";
 import { PatternFormat } from "react-number-format";
+import { db } from "../../firebase";
 
 const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-
   const [loader, setLoader] = useState(false);
+
+  const strippedPhoneNumber = phoneNumber.replace(/[^\d]/g, '');
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
@@ -16,7 +17,7 @@ const SignUp = () => {
 
     try {
       await addDoc(collection(db, "contacts"), {
-        phone: phoneNumber,
+        phone: strippedPhoneNumber,
         name: name,
         email: email,
       });
@@ -67,6 +68,7 @@ const SignUp = () => {
       </button>
     </form>
   );
+
 };
 
 export default SignUp;
