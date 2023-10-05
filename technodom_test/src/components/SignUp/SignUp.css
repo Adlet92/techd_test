@@ -4,7 +4,7 @@
 }
 .main-container{
 	width: 456px;
-  min-height: 434px;
+  min-height: 438px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -51,6 +51,15 @@
   color: #000000;
   padding-top: 26px;
   padding-bottom: 20px;
+}
+.checkbox-div{
+  display: flex;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-size: 14px;
+  line-height: 19px;
+  color: #2B2B2B;
+  padding-bottom: 1px;
 }
 .data{
 	height: 45px;
@@ -127,6 +136,25 @@ form .btn-signup button{
   line-height: 16px;
   color: #175BC0;
 }
+form .disabled button{
+	height: 100%;
+	width: 100%;
+	font-size: 18px;
+	font-weight: 500;
+	border: none;
+	cursor: pointer;
+  border-radius: 12px;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+
+  color: #ffffff;
+  background-color: #D3D3D3;
+  border: transparent;
+}
+
 
 .signup-link{
 	text-align: center;

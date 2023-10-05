@@ -2,9 +2,9 @@ import { Route, Routes } from "react-router-dom"
 import MainPage from "./components/MainPage/MainPage"
 import PageNotFound from "./components/PageNotFound/PageNotFound"
 import ProtectedRoute from "./components/ProtectedRoute"
+import RecoverPassword from "./components/RecoverPassword/RecoverPassword"
 import SignIn from "./components/SignIn/SignIn"
 import SignUp from "./components/SignUp/SignUp"
-import RecoverPassword from "./components/RecoverPassword/RecoverPassword"
 
 
 function App() {

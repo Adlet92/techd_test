@@ -1,11 +1,9 @@
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { PatternFormat } from "react-number-format";
-import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import { db } from "../../firebase";
 import Loading from "../Loading/Loading";
-import { routes } from "../utils/routes";
 import { formatPhoneNumber, validateForm } from "../utils/validation";
 import "./SignUp.css";
 
@@ -15,6 +13,7 @@ const SignUp = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
 
   const strippedPhoneNumber = formatPhoneNumber(phoneNumber);
 
@@ -22,6 +21,7 @@ const SignUp = () => {
     e.preventDefault();
     setErrors([]);
     setLoading(true);
+
     try {
       const errors = await validateForm(email, phoneNumber, name);
 
@@ -57,6 +57,8 @@ const SignUp = () => {
     }
   };
 
+  const isFormIncomplete = !name || !email || !phoneNumber || !consentChecked;
+
   return (
     <div className="main">
        <div className={`main-container ${errors.length ? "error" : ""}`}>
@@ -72,7 +74,6 @@ const SignUp = () => {
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  // onBlur={handlePhoneNumberBlur}
                   className={
                     errors.includes("Номер телефона обязателен") || errors.includes("Номер телефона введён не полностью") || errors.includes("Номер телефона уже существует")
                       ? "error-input"
@@ -107,6 +108,16 @@ const SignUp = () => {
                   }
                 />
               </div>
+              <div className="checkbox-div">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={consentChecked}
+                    onChange={() => setConsentChecked(!consentChecked)}
+                  />
+                  Я прочитал(а) и соглашаюсь с правилами сайта
+                </label>
+              </div>
               {errors.length > 0 && (
                 <div className="error-message">
                   {errors.map((error, index) => (
@@ -114,17 +125,17 @@ const SignUp = () => {
                   ))}
                 </div>
               )}
-              <div className="btn-signup">
-                <button type="submit">
+              <div className={`btn-signin ${isFormIncomplete ? "disabled" : ""}`}>
+                <button type="submit" disabled={isFormIncomplete}>
                 {loading ? <Loading/> : "Зарегистрироваться"}
                 </button>
               </div>
-              <div className="signup-link">
+              {/* <div className="signup-link">
                 Already have an account?{" "}
                 <Link to={routes.signin}>
                   <label className="slide">Login</label>
                 </Link>
-              </div>
+              </div> */}
             </form>
           </div>
         </div>

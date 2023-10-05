@@ -34,18 +34,6 @@ export const formatPhoneNumber = (phoneNumber: string) => {
 export const phoneNumberLength = (phoneNumber: string) => {
   return (formatPhoneNumber(phoneNumber).length === 11);
 };
-// export const validatePhoneNumber = (phoneNumber: string): string[] => {
-//   const strippedPhoneNumber = formatPhoneNumber(phoneNumber);
-//   const errors: string[] = [];
-//   if (!phoneNumber.trim()) {
-//     errors.push("Номер телефона обязателен");
-//   } else if (!phoneNumberLength(strippedPhoneNumber)) {
-//     errors.push("Номера телефона введён не полностью");
-//   }else if (checkPhoneNumberExists(strippedPhoneNumber)) {
-//     errors.push("Номер телефона уже существует");
-//   }
-//   return errors;
-// };
 export const validatePhoneNumber = async (phoneNumber: string): Promise<string[]> => {
   const strippedPhoneNumber = formatPhoneNumber(phoneNumber);
   const errors: string[] = [];
