@@ -2,9 +2,10 @@ import { collection, getDocs } from "firebase/firestore";
 import { NavigateFunction } from "react-router-dom";
 import { db } from "../../firebase";
 import { routes } from "./routes";
+import { isValidEmailFormat, phoneNumberLength } from "./validation";
 
 export const checkPhoneNumberExists = async (phoneNumber: string) => {
-  if (phoneNumber.length === 11) {
+  if (phoneNumberLength(phoneNumber)) {
     const colRef = collection(db, 'contacts');
     const snapshots = await getDocs(colRef);
 
@@ -17,6 +18,22 @@ export const checkPhoneNumberExists = async (phoneNumber: string) => {
   }
   return false;
 };
+
+export const checkEmailExists = async (email: string) => {
+  if (isValidEmailFormat(email)) {
+    const colRef = collection(db, 'contacts');
+    const snapshots = await getDocs(colRef);
+
+    const emailExists = snapshots.docs.some((doc) => {
+      const data = doc.data();
+      return data.email === email;
+    });
+
+    return emailExists;
+  }
+  return false;
+};
+
 
 export const verifyOTP = (otp: string, navigate: NavigateFunction, setOtpError: (error: string) => void) => {
   if (otp.length === 6) {
@@ -36,3 +53,4 @@ export const verifyOTP = (otp: string, navigate: NavigateFunction, setOtpError: 
     }
   }
 };
+

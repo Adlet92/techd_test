@@ -1,19 +1,40 @@
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { PatternFormat } from "react-number-format";
+import { Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 import { db } from "../../firebase";
+import Loading from "../Loading/Loading";
+import { routes } from "../utils/routes";
+import { formatPhoneNumber, validateForm } from "../utils/validation";
+import "./SignUp.css";
 
 const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [loader, setLoader] = useState(false);
+  const [errors, setErrors] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const strippedPhoneNumber = phoneNumber.replace(/[^\d]/g, '');
+  const strippedPhoneNumber = formatPhoneNumber(phoneNumber);
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoader(true);
+    setErrors([]);
+    setLoading(true);
+    try {
+      const errors = await validateForm(email, phoneNumber, name);
+
+      if (errors.length > 0) {
+        setErrors(errors);
+        setLoading(false);
+        return;
+      }
+
+    } catch (error) {
+      console.error('Error validating form:', error);
+      setLoading(false);
+    }
 
     try {
       await addDoc(collection(db, "contacts"), {
@@ -22,53 +43,106 @@ const SignUp = () => {
         email: email,
       });
 
-      setLoader(false);
-      alert("Your message has been submitted👍");
+      toast.success('Вы успешно зарегистрировались', {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3500,
+      });
       setName("");
       setEmail("");
       setPhoneNumber("");
     } catch (error) {
       alert(error.message);
-      setLoader(false);
+    }finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <h1>Register</h1>
-
-      <label>Phone number</label>
-      <PatternFormat
-        format="+7 (###) #### ###"
-        allowEmptyFormatting mask="_"
-        type="tel"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
+    <div className="main">
+       <div className={`main-container ${errors.length ? "error" : ""}`}>
+        <div className="container">
+          <div className="signup-container">
+            <div className="text">Регистрация</div>
+            <form onSubmit={handleSubmit}>
+              <div className="data">
+                <label>Номер телефона</label>
+                <PatternFormat
+                  format="+7 (###) #### ###"
+                  allowEmptyFormatting mask="_"
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  // onBlur={handlePhoneNumberBlur}
+                  className={
+                    errors.includes("Номер телефона обязателен") || errors.includes("Номер телефона введён не полностью") || errors.includes("Номер телефона уже существует")
+                      ? "error-input"
+                      : ""
+                  }
+                  />
+              </div>
+              <div className="data">
+                <label>Имя</label>
+                <input
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={
+                    errors.includes("Имя не заполнено")
+                      ? "error-input"
+                      : ""
+                  }
+                />
+              </div>
+              <div className="data">
+                <label>Email</label>
+                <input
+                  placeholder="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={
+                    errors.includes("Email обязателен") || errors.includes("Email введён неверно") || errors.includes("Email уже существует")
+                      ? "error-input"
+                      : ""
+                  }
+                />
+              </div>
+              {errors.length > 0 && (
+                <div className="error-message">
+                  {errors.map((error, index) => (
+                    <p key={index} className="error-paragraph">{error}</p>
+                  ))}
+                </div>
+              )}
+              <div className="btn-signup">
+                <button type="submit">
+                {loading ? <Loading/> : "Зарегистрироваться"}
+                </button>
+              </div>
+              <div className="signup-link">
+                Already have an account?{" "}
+                <Link to={routes.signin}>
+                  <label className="slide">Login</label>
+                </Link>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
       />
-      <label>Name</label>
-      <input
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-
-      <label>Email</label>
-      <input
-        placeholder="Email"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-
-      <button
-        type="submit"
-        style={{ background: loader ? "#ccc" : " rgb(2, 2, 110)" }}
-      >
-        Submit
-      </button>
-    </form>
-  );
-
+    </div>
+  )
 };
 
 export default SignUp;

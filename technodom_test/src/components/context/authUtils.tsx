@@ -1,4 +1,4 @@
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { RecaptchaVerifier, signInWithPhoneNumber, signOut } from "firebase/auth";
 import { auth } from "../../firebase";
 
 let recaptchaVerifier: RecaptchaVerifier | null = null;
@@ -30,4 +30,7 @@ export const requestOTP = async (phoneNumber: string) => {
   }
 };
 
+export const logout = () => {
+  return signOut(auth)
+};
 

@@ -1,52 +1,76 @@
-export const validatePassword = (value: string, repeatPassword: string): string[] => {
-  const lowercaseRegex = /[a-z]/;
-  const uppercaseRegex = /[A-Z]/;
-  const numberRegex = /\d/;
+import { checkEmailExists, checkPhoneNumberExists } from "./verification";
 
-  const errors = [];
+export const isValidEmailFormat = (email: string): boolean => {
+  return /\S+@\S+\.\S+/.test(email);
+};
 
-  if (value && value.trim().length < 6) {
-    errors.push("Password must be at least 6 characters long");
+export const validateEmail = async (email: string): Promise<string[]> => {
+  const errors: string[] = [];
+  if (!email.trim()) {
+    errors.push("Email обязателен");
+  } else if (!isValidEmailFormat(email)) {
+    errors.push("Email введён неверно");
   }
-  if (value && !lowercaseRegex.test(value)) {
-    errors.push("Password must contain a lowercase letter");
-  }
-  if (value && !uppercaseRegex.test(value)) {
-    errors.push("Password must contain an uppercase letter");
-  }
+  else {
+    const emailExists = await checkEmailExists(email);
 
-  if (value && !numberRegex.test(value)) {
-    errors.push("Password must contain a number");
+    if (emailExists) {
+      errors.push("Email уже существует");
+    }
   }
-
-  if (value && repeatPassword && value !== repeatPassword) {
-    errors.push("Passwords do not match");
+  return errors;
+};
+export const validateName = (name: string): string[] => {
+  const errors: string[] = [];
+  if (!name.trim()) {
+    errors.push("Имя не заполнено");
   }
-
   return errors;
 };
 
-// export const validateEmail = (email: string): string[] => {
+export const formatPhoneNumber = (phoneNumber: string) => {
+  return phoneNumber.replace(/[^\d]/g, '');
+};
+export const phoneNumberLength = (phoneNumber: string) => {
+  return (formatPhoneNumber(phoneNumber).length === 11);
+};
+// export const validatePhoneNumber = (phoneNumber: string): string[] => {
+//   const strippedPhoneNumber = formatPhoneNumber(phoneNumber);
 //   const errors: string[] = [];
-//   if (!email.trim()) {
-//     errors.push("Email is required");
-//   } else if (!/\S+@\S+\.\S+/.test(email)) {
-//     errors.push("Invalid email format");
+//   if (!phoneNumber.trim()) {
+//     errors.push("Номер телефона обязателен");
+//   } else if (!phoneNumberLength(strippedPhoneNumber)) {
+//     errors.push("Номера телефона введён не полностью");
+//   }else if (checkPhoneNumberExists(strippedPhoneNumber)) {
+//     errors.push("Номер телефона уже существует");
 //   }
 //   return errors;
 // };
-export const validateEmail = (email: string): string[] => {
+export const validatePhoneNumber = async (phoneNumber: string): Promise<string[]> => {
+  const strippedPhoneNumber = formatPhoneNumber(phoneNumber);
   const errors: string[] = [];
-  if (!email.trim()) {
-    errors.push("Email is required");
+
+  if (!phoneNumber.trim()) {
+    errors.push("Номер телефона обязателен");
+  } else if (!phoneNumberLength(strippedPhoneNumber)) {
+    errors.push("Номер телефона введён не полностью");
+  } else {
+    const phoneNumberExists = await checkPhoneNumberExists(strippedPhoneNumber);
+
+    if (phoneNumberExists) {
+      errors.push("Номер телефона уже существует");
+    }
   }
+
   return errors;
 };
 
-export const validateForm = (email: string, password: string, repeatPassword: string): string[] => {
-  const emailErrors = validateEmail(email);
-  const passwordErrors = validatePassword(password, repeatPassword);
-  return [...emailErrors, ...passwordErrors];
+
+export const validateForm = async (email: string, phoneNumber: string, name: string): Promise<string[]> => {
+  const phoneNumberErrors = await validatePhoneNumber(phoneNumber);
+  const nameErrors = validateName(name);
+  const emailErrors = await validateEmail(email);
+  return [...phoneNumberErrors, ...nameErrors, ...emailErrors];
 };
 
 

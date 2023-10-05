@@ -4,6 +4,7 @@ import PageNotFound from "./components/PageNotFound/PageNotFound"
 import ProtectedRoute from "./components/ProtectedRoute"
 import SignIn from "./components/SignIn/SignIn"
 import SignUp from "./components/SignUp/SignUp"
+import RecoverPassword from "./components/RecoverPassword/RecoverPassword"
 
 
 function App() {
@@ -14,7 +15,9 @@ function App() {
           <Route path="/"
             element={<SignIn />} />
           <Route path="/signup"
-            element={<SignUp />} />
+          element={<SignUp />} />
+        <Route path="/recover"
+            element={<RecoverPassword />} />
           <Route
             path="/main"
             element={

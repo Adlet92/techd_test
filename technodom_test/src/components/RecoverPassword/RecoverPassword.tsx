@@ -2,12 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import { PatternFormat } from 'react-number-format';
 import 'react-phone-number-input/style.css';
 import { Link, useNavigate } from "react-router-dom";
-import Loading from "../Loading/Loading";
 import { requestOTP } from "../context/authUtils";
 import { routes } from "../utils/routes";
 import { formatPhoneNumber, phoneNumberLength } from "../utils/validation";
 import { checkPhoneNumberExists, verifyOTP } from "../utils/verification";
-import "./SignIn.css";
+import "./RecoverPassword.css";
 
 
 const SignIn = () => {
@@ -87,7 +86,7 @@ const SignIn = () => {
       <div className={`main-container-signin ${expandForm ? "error-signin" : ""}`}>
         <div className="container-signin">
           <div className="signin-container">
-            <div className="text-signin">Войти в систему по номеру телефона</div>
+            <div className="text-signin">Восстановить пароль</div>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="data-signin">
                 <label>Номер телефона</label>
@@ -100,46 +99,14 @@ const SignIn = () => {
                   className={error ? "error-input-signin" : ""}
                 />
               </div>
-              {expandForm === true ? (
-              <div className="data-signin">
-                <label>Код подтверждения</label>
-                <input
-                    type="number"
-                    value={OTP}
-                    onChange={handleVerifyOTP}
-                    // className={error ? "error-input-signin" : ""}
-                  />
-                  <div className="recover-password">
-                  <Link to={routes.recover}>
-                    <label className="recover-password-label">Забыли пароль?</label>
-                  </Link>
-                  </div>
-                  {otpError && (
-                  <div className="error-message-signin">{otpError}</div>
-                )}
-                </div>
-              ) : null}
-              {loading ? (
-                <div className="loading">
-                 <Loading/>
-                </div>
-              ) : null}
-             {error && (
-                <div className="error-message-signin">{error}</div>
-              )}
-              {!error && (
-                <div id="sign-in-button" className="captcha"></div>
-              )}
-              {!error && expandForm && (
                 <div className={`btn-signin ${(isButtonEnabled && isCaptchaVisible) ? "" : "disabled"}`}>
                   <button
                     type="submit"
                     disabled={(!isButtonEnabled || !isCaptchaVisible)}
                     onClick={handleSubmit}>
-                    Войти
+                    Восстановить
                   </button>
                 </div>
-              )}
               {error && error !== "Ошибка при запросе OTP. Возможно телефонный номер не введен полностью" && (
                 <div className="signin-link">
                   Нет аккаунта?{" "}

@@ -1,12 +1,12 @@
-// import Header from "../Header/Header";
+import Header from "../Header/Header";
 import "./MainPage.css";
 
 function MainPage() {
 
   return (
     <div>
-      {/* <Header backButton={false} /> */}
-      <div className="topics">
+      <Header/>
+      <div className="main-page">
         <div>
           <h2>Welcome to our page</h2>
         </div>
