@@ -1,9 +1,11 @@
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { PatternFormat } from "react-number-format";
+import { Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import { db } from "../../firebase";
 import Loading from "../Loading/Loading";
+import { routes } from "../utils/routes";
 import { formatPhoneNumber, validateForm } from "../utils/validation";
 import "./SignUp.css";
 
@@ -50,6 +52,7 @@ const SignUp = () => {
       setName("");
       setEmail("");
       setPhoneNumber("");
+      setConsentChecked(false);
     } catch (error) {
       alert(error.message);
     }finally {
@@ -130,12 +133,12 @@ const SignUp = () => {
                 {loading ? <Loading/> : "Зарегистрироваться"}
                 </button>
               </div>
-              {/* <div className="signup-link">
-                Already have an account?{" "}
+              <div className="signup-link">
+                Уже имеется аккаунт?{" "}
                 <Link to={routes.signin}>
-                  <label className="slide">Login</label>
+                  <label className="slide">Войти</label>
                 </Link>
-              </div> */}
+              </div>
             </form>
           </div>
         </div>

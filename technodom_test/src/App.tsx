@@ -5,12 +5,12 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import RecoverPassword from "./components/RecoverPassword/RecoverPassword"
 import SignIn from "./components/SignIn/SignIn"
 import SignUp from "./components/SignUp/SignUp"
-
+import { UserProvider } from "./components/context/UserContext"
 
 function App() {
   return (
     <div>
-      {/* <AuthContextProvider> */}
+      <UserProvider>
         <Routes>
           <Route path="/"
             element={<SignIn />} />
@@ -21,9 +21,9 @@ function App() {
           <Route
             path="/main"
             element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
                 <MainPage />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
           <Route
@@ -35,7 +35,7 @@ function App() {
             }
           />
         </Routes>
-      {/* </AuthContextProvider> */}
+      </UserProvider>
     </div>
   )
 }

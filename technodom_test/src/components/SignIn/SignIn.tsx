@@ -3,10 +3,11 @@ import { PatternFormat } from 'react-number-format';
 import 'react-phone-number-input/style.css';
 import { Link, useNavigate } from "react-router-dom";
 import Loading from "../Loading/Loading";
+import { useUser } from "../context/UserContext";
 import { requestOTP } from "../context/authUtils";
 import { routes } from "../utils/routes";
 import { formatPhoneNumber, phoneNumberLength } from "../utils/validation";
-import { checkPhoneNumberExists, verifyOTP } from "../utils/verification";
+import { checkPhoneNumberExists, getUserName, verifyOTP } from "../utils/verification";
 import "./SignIn.css";
 
 
@@ -20,6 +21,7 @@ const SignIn = () => {
   const [isCaptchaVisible, setIsCaptchaVisible] = useState<boolean>(false);
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
   const [otpError, setOtpError] = useState<string>("");
+  const { setUsername } = useUser();
 
   const checkPhoneNumber = useCallback(async () => {
     const strippedPhoneNumber = formatPhoneNumber(phoneNumber);
@@ -82,6 +84,22 @@ const SignIn = () => {
     }
   }, [isCaptchaVisible]);
 
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const fetchedUsername = await getUserName(formatPhoneNumber(phoneNumber));
+        setUsername(fetchedUsername);
+      } catch (error) {
+        console.error('Error fetching username:', error);
+        setUsername('User');
+      }
+    };
+
+    if (expandForm) {
+      fetchUsername();
+    }
+  }, [expandForm, phoneNumber, setUsername]);
+
   return (
     <div className="main">
       <div className={`main-container-signin ${expandForm ? "error-signin" : ""}`}>
@@ -101,13 +119,12 @@ const SignIn = () => {
                 />
               </div>
               {expandForm === true ? (
-              <div className="data-signin">
+                <div className="data-signin">
                 <label>Код подтверждения</label>
                 <input
                     type="number"
                     value={OTP}
                     onChange={handleVerifyOTP}
-                    // className={error ? "error-input-signin" : ""}
                   />
                   <div className="recover-password">
                   <Link to={routes.recover}>
@@ -128,8 +145,9 @@ const SignIn = () => {
                 <div className="error-message-signin">{error}</div>
               )}
               {!error && (
-                <div id="sign-in-button" className="captcha"></div>
+                <div id="sign-in-button" className={`captcha ${otpError ? "error-otp" : ""}`}></div>
               )}
+
               {!error && expandForm && (
                 <div className={`btn-signin ${(isButtonEnabled && isCaptchaVisible) ? "" : "disabled"}`}>
                   <button

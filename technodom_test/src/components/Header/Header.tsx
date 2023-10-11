@@ -1,23 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { logout } from "../context/authUtils";
+import { useUser } from "../context/UserContext";
 import { routes } from "../utils/routes";
 import './Header.css';
 
 const Header = () => {
-  // const authUser = UserAuth();
-  // const user = authUser && authUser.user;
   const navigate = useNavigate();
-
+  const { username, clearUserData } = useUser();
   const handleLogout = () => {
-    if (logout) {
-      logout().then(() => navigate(routes.signin));
-    }
+    clearUserData();
+    navigate(routes.signin);
   };
 
   return (
     <div className="header">
-        <div className="frame4">
-          {/* <div className="account-label">{user && user.email}</div> */}
+      <div className="frame4">
+          <div className="account-label">{username}</div>
           <button className="logout-button" onClick={handleLogout}>
             Log Out
           </button>

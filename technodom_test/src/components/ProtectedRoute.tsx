@@ -1,21 +1,20 @@
 import React, { ReactNode } from "react";
-
-import { UserAuth } from "./context/AuthContext";
-import { routes } from "./utils/routes";
 import { Navigate } from "react-router-dom";
+import { useUser } from "./context/UserContext";
+import { routes } from "./utils/routes";
 
 type ProtectedRouteProps = {
   children: ReactNode;
 };
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const auth = UserAuth();
+  const { username } = useUser();
 
-  if (!auth || !auth.user) {
+  if (!username) {
     return <Navigate to={routes.signin} />;
   }
 
   return <>{children}</>;
-}
+};
 
-export default ProtectedRoute
+export default ProtectedRoute;

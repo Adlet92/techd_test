@@ -19,6 +19,25 @@ export const checkPhoneNumberExists = async (phoneNumber: string) => {
   return false;
 };
 
+export const getUserName = async (phoneNumber: string) => {
+  const colRef = collection(db, 'contacts');
+  const snapshots = await getDocs(colRef);
+
+  try {
+    for (const doc of snapshots.docs) {
+      const data = doc.data();
+      if (data.phone === phoneNumber) {
+        return data.name || 'User';
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching username:", error);
+  }
+  return 'User';
+};
+
+
+
 export const checkEmailExists = async (email: string) => {
   if (isValidEmailFormat(email)) {
     const colRef = collection(db, 'contacts');

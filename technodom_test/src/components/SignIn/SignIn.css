@@ -113,6 +113,7 @@ form .data-signin input:not(:placeholder-shown) {
   line-height: 12px;
   text-align: center;
   color: #EC3030;
+  margin-top: 3%;
   }
 
 form .btn-signin{
@@ -159,7 +160,6 @@ form .disabled button{
   border: transparent;
 }
 
-
 form .signin-link{
 	text-align: center;
   font-family: 'Open Sans';
@@ -189,4 +189,7 @@ form .signin-link .slide-signin{
 }
 .captcha{
   margin-top: 15%;
+}
+.error-otp{
+  margin-top: 26%;
 }
